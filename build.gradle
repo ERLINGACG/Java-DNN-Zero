@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.erling'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation 'net.java.dev.jna:jna:5.14.0'
+    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
+
+    // 新增 Lombok 依赖（关键：编译时依赖，不打包到 JAR）
+    compileOnly 'org.projectlombok:lombok:1.18.30' // 编译时仅需接口，不打包
+    annotationProcessor 'org.projectlombok:lombok:1.18.30' // 编译期生成代码的处理器
+}
+
+test {
+    useJUnitPlatform()
+}
