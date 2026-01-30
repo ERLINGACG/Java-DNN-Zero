@@ -1,0 +1,13 @@
+{
+  "env": "test1",
+  "test1": {
+    "model_path": "./clibconf/model/face_detection_yunet_2023mar.onnx",
+    "input_height": 640,
+    "input_width": 640,
+    "conf_thresh": 0.5,
+    "nms_thresh": 0.5,
+    "is_fusion": false,
+    "max_face": 5000,
+    "enable_backend": 1
+  }
+}

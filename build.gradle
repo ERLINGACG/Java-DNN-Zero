@@ -17,6 +17,13 @@ dependencies {
     implementation 'com.moandjiezana.toml:toml4j:0.7.2'
 
     // 新增 Lombok 依赖（关键：编译时依赖，不打包到 JAR）
+    implementation 'org.ow2.asm:asm:9.4'
+    implementation 'org.ow2.asm:asm-commons:9.4'
+    implementation 'org.ow2.asm:asm-tree:9.4'
+    implementation 'org.ow2.asm:asm-util:9.4'
+
+    // 可选：如果你需要处理注解
+    implementation 'org.ow2.asm:asm-analysis:9.4'
     compileOnly 'org.projectlombok:lombok:1.18.30' // 编译时仅需接口，不打包
     annotationProcessor 'org.projectlombok:lombok:1.18.30' // 编译期生成代码的处理器
 }

@@ -1,0 +1,10 @@
+{
+  "env": "test1",
+  "test1": {
+    "model_path": "./clibconf/model/arcfaceresnet100-8.onnx",
+    "input_height": 112,
+    "input_width": 112,
+    "enable_backend": 1,
+    "is_fusion": false
+  }
+}

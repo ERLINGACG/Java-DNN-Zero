@@ -3,6 +3,7 @@
     <words>
       <w>clibconf</w>
       <w>gdlz</w>
+      <w>检测结果json字符串应该不为null</w>
     </words>
   </dictionary>
 </component>

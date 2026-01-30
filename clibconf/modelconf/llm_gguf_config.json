@@ -1,0 +1,6 @@
+{
+  "env": "test1",
+  "test1": {
+     "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\qwen1_5-0_5b-chat-q4_0.gguf"
+  }
+}

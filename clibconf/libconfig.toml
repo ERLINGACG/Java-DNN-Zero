@@ -1,0 +1,8 @@
+ENV=[
+    "E:/ZeroPlan/C++/GeneralDnnLib-Zero/cmake-build-release-visual-studio/gdlz_test/Release/opencv_world4120.dll",
+    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/ggml-base.dll",
+    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/ggml-cpu.dll",
+    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/ggml-cuda.dll",
+    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/ggml.dll",
+    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/llama.dll"
+]
