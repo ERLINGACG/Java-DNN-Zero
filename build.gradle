@@ -26,6 +26,10 @@ dependencies {
     implementation 'org.ow2.asm:asm-analysis:9.4'
     compileOnly 'org.projectlombok:lombok:1.18.30' // 编译时仅需接口，不打包
     annotationProcessor 'org.projectlombok:lombok:1.18.30' // 编译期生成代码的处理器
+
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
+
 }
 
 test {
