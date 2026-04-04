@@ -5,6 +5,8 @@ import com.erling.jdz.cv.framework.yolo.YoloOutput;
 import com.erling.jdz.cv.frameworkinf.yolo.YoloFrameWorkInf;
 import com.erling.jdz.llm.framework.gguf.LLmGGufFrameWork;
 import com.erling.jdz.llm.framework.gguf.batch.LLM_GGUF_Batch;
+import com.erling.jdz.llm.framework.gguf.batch.LLM_GGUF_Context;
+import com.erling.jdz.llm.framework.gguf.batch.LLM_GGUF_Context_RTParam;
 import com.erling.jdz.llm.framework.gguf.stream.LLM_GGUF_Stream;
 import com.erling.jdz.llm.frameworkinf.gguf.LLmGGufFrameWorkInf;
 import com.erling.jdz.load.DyLinkLibLoader;
@@ -12,12 +14,15 @@ import com.erling.jdz.load.RunEnv;
 import com.erling.jdz.load.ann.ConfigPath;
 import com.erling.jdz.load.ann.DyLinkLib;
 import com.erling.jdz.load.ann.Mapping;
+import com.erling.jdz.uitls.run.TaskRun;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class NewLoaderTest {
 
@@ -35,6 +40,7 @@ public class NewLoaderTest {
     public NewLoaderTest() throws IllegalAccessException {
         RunEnv.SET_ENV.run();
         DyLinkLibLoader.load(this);
+
     }
 
     @Test
@@ -104,7 +110,8 @@ public class NewLoaderTest {
                  请写一段如何调用tensorRT的python代码
                 """;
         String prompt1= """
-                请介绍你自己一下
+              有一个人李四，20岁，
+              请按格式输出他们两个的信息
                 """;
 
         String finalPrompt =
@@ -115,7 +122,15 @@ public class NewLoaderTest {
                         <|im_start|>assistant
                         """;
 
-        llmGGufFrameWork.initBatch(batch,finalPrompt);
+        llmGGufFrameWork.setSampler("""
+                root ::= "answer:" "{" name "," age "}"
+                name ::= " 'name:'" [^,]+
+                age  ::= " 'age:' " [0-9]+""",
+                true,
+                30,0.9f,0.1f
+        ).initBatch(batch,finalPrompt);
+//        llmGGufFrameWork.setSampler(30,0.9f,0.1f);
+//        llmGGufFrameWork.initBatch(batch,finalPrompt);
         do {
 
             var stream = new LLM_GGUF_Stream();
@@ -133,5 +148,147 @@ public class NewLoaderTest {
 
     }
 
+
+    @Test
+    @DisplayName("function call 测试")
+    public void testFunctionCall() {
+
+        String prompt1= """
+              
+                查询李四的信息
+                """;
+
+        String finalPrompt =
+                        """
+                        <|im_start|>user
+                        """ + prompt1 + """
+                        <|im_end|>
+                        <|im_start|>assistant
+                        """;
+        String gbnf= """
+                 root ::= "answer:" "{" name "," age "}"
+                                name ::= " 'name:'" [^,]+
+                                age  ::= " 'age:' " [0-9]+
+                 """;
+
+
+
+        var batch = new LLM_GGUF_Batch();
+        llmGGufFrameWork.setSampler(
+                """
+                     root ::= "'answer:'{'functionName:' " functionItem "," " 'arg:'[" arg "]}"
+                     functionItem ::= "get_Weather" | "get_StockPrice" | "sub" | "get_User"
+                     arg ::= [^\\]]+
+                     """, true,
+                30,0.9f,0.1f
+        )
+                .initBatch(batch,finalPrompt);
+
+        do {
+
+            var stream = new LLM_GGUF_Stream();
+            llmGGufFrameWork.reasoning(batch, stream);
+
+            System.out.print(stream.getStream());
+
+        } while (batch.next_token != batch.eos);
+        llmGGufFrameWork.batchFree(batch);
+        llmGGufFrameWork.destroy();
+
+    }
+    @Test
+    @DisplayName("测试LLM GGUF 推理异步")
+    public void testAsync() throws IllegalAccessException, InterruptedException {
+
+
+
+        var thread1=new Thread(()->{
+            String prompt1= """
+          
+            有个人叫lisi，20岁
+            """;
+
+            String finalPrompt =
+                    """
+                    <|im_start|>user
+                    """ + prompt1 + """
+                    <|im_end|>
+                    <|im_start|>assistant
+                    """;
+            var batch = new LLM_GGUF_Batch();
+            var context = new LLM_GGUF_Context();
+            var param = new LLM_GGUF_Context_RTParam();
+            param.gbnf_str= """
+                    root ::= "answer:" "{" name "," age "}"
+                    name ::= " 'name:'" "lisi"
+                    age  ::= " 'age:' " [0-9]+
+            """;
+            param.use_gbnf=true;
+            llmGGufFrameWork.setSamplerAsync(
+                    param,
+                    context
+            );
+            llmGGufFrameWork.initBatchAsync(batch,finalPrompt,context);
+            do {
+//                System.out.println();
+                var stream = new LLM_GGUF_Stream();
+                llmGGufFrameWork.reasoningAsync(batch, context, stream);
+
+                System.out.print(stream.getStream());
+                System.out.flush();
+
+            } while (batch.next_token != batch.eos);
+            llmGGufFrameWork.batchFree(batch);
+//            llmGGufFrameWork.destroy();
+        });
+
+        var thread2 =new Thread(()->{
+
+            String prompt1= """
+              
+                有个人叫wangwu，20岁
+                """;
+
+            String finalPrompt =
+                    """
+                    <|im_start|>user
+                    """ + prompt1 + """
+                        <|im_end|>
+                        <|im_start|>assistant
+                        """;
+            var batch = new LLM_GGUF_Batch();
+            var context = new LLM_GGUF_Context();
+            var param = new LLM_GGUF_Context_RTParam();
+            param.gbnf_str= """
+                        root ::= "answer:" "{" name "," age "}"
+                        name ::= " 'name:'" "wangwu"
+                        age  ::= " 'age:' " [0-9]+
+                """;
+            param.use_gbnf=true;
+            llmGGufFrameWork.setSamplerAsync(
+                    param,
+                    context
+            );
+            llmGGufFrameWork.initBatchAsync(batch,finalPrompt,context);
+            do {
+
+                var stream = new LLM_GGUF_Stream();
+//                System.out.println();
+                llmGGufFrameWork.reasoningAsync(batch, context, stream);
+
+                System.out.print(stream.getStream());
+                System.out.flush();
+
+            } while (batch.next_token != batch.eos);
+            llmGGufFrameWork.batchFree(batch);
+//            llmGGufFrameWork.destroy();
+        });
+
+            thread1.start();
+//            thread2.start();
+            thread1.join();
+//            thread2.join();
+
+    }
 
 }

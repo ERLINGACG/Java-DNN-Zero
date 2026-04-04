@@ -4,7 +4,7 @@ import com.erling.jdz.cv.frameworkinf.yolo.YoloFrameWorkInf;
 import com.erling.jdz.load.ann.init;
 import com.sun.jna.Pointer;
 
-public class YoloFrameWork  {
+public class YoloFrameWork  implements Cloneable {
 
      private YoloFrameWorkInf frameWork;
 
@@ -28,6 +28,12 @@ public class YoloFrameWork  {
 
     public void detect(byte[] byte_data, YoloOutput output) {
         frameWork.YoloDetection(yoloFrameworkPtr, byte_data.length, byte_data, output);
-        System.out.println(output.getJsonStr());
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        YoloFrameWork new_obj = (YoloFrameWork) super.clone();
+        new_obj.init_model();
+        return new_obj;
     }
 }

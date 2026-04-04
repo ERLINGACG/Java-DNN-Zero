@@ -1,0 +1,18 @@
+{
+  name = "getWeather",
+  description = "返回指定城市的天气预报",
+  parameters = JsonObjectSchema
+  {
+    description = null,
+    properties =
+    {
+      city=JsonStringSchema
+      {description = "城市名称，例如'北京'"},
+      unit=JsonEnumSchema
+      {
+        description = "温度单位",
+        enumValues = [Celsius, Fahrenheit]
+      }
+    },
+    required = [city],
+    additionalProperties = null, definitions = {} }, metadata = {} }

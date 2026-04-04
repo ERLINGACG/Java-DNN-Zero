@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '2.3.20'
+    id 'org.jetbrains.kotlin.plugin.lombok' version '2.3.20'   // 添加 Kotlin Lombok 插件
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.3.20'
+
+}
+
+group = 'com.erling'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.java.dev.jna:jna:5.14.0'
+    implementation project(':jdz-core')
+
+    compileOnly 'org.projectlombok:lombok:1.18.30' // 编译时仅需接口，不打包
+    annotationProcessor 'org.projectlombok:lombok:1.18.30' // 编译期生成代码的处理器
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}

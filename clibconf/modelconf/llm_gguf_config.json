@@ -1,6 +1,42 @@
 {
-  "env": "test1",
+  "env": "test3",
   "test1": {
-     "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\qwen1_5-0_5b-chat-q4_0.gguf"
+     "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\qwen1_5-0_5b-chat-q4_0.gguf",
+     "n_gpu_layers": 25,
+     "use_mmap": true,
+     "use_mlock": false,
+     "n_ctx": 1024,
+     "n_batch": 1024,
+     "temp": 0.1,
+     "top_k": 30,
+     "top_p": 0.9,
+     "is_grammar": false,
+     "grammar": ""
+  },
+  "test2": {
+    "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\4b\\Qwen3-4B-GGUF\\Qwen3-4B-Q4_K_M.gguf",
+    "n_gpu_layers": 38,
+    "use_mmap": true,
+    "use_mlock": false,
+    "n_ctx": 32000,
+    "n_batch": 1024,
+    "temp": 0.3,
+    "top_k": 30,
+    "top_p": 0.9,
+    "is_grammar": false,
+    "grammar_file": "./clibconf/modelconf/answer_grammar.gbnf"
+  },
+  "test3": {
+    "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\4b\\9b\\glm-4-9b-chat-Q4_K_M.gguf",
+    "n_gpu_layers": 35,
+    "use_mmap": true,
+    "use_mlock": false,
+    "n_ctx": 32000,
+    "n_batch": 1024,
+    "temp": 0.3,
+    "top_k": 30,
+    "top_p": 0.9,
+    "is_grammar": false,
+    "grammar_file": "./clibconf/modelconf/answer_grammar.gbnf"
   }
 }

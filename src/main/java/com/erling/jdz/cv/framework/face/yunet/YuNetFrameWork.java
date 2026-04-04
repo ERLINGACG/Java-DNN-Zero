@@ -10,7 +10,7 @@ import com.erling.jdz.load.ann.DyLinkLib;
 import com.erling.jdz.load.ann.init;
 import com.sun.jna.Pointer;
 
-public class YuNetFrameWork  {
+public class YuNetFrameWork implements  Cloneable  {
 
 
 
@@ -46,6 +46,13 @@ public class YuNetFrameWork  {
        public void featureVecArc(ArcFrameWork arcFrameWork, int size , byte[] data, YuNetOutput output0, FeatureOutput output1){
          frameWork.CV_YuNetDetection_FeatureVec_Arc(yunetFrameworkPtr,
                  arcFrameWork.arcFaceFrameworkPtr(), size, data,output0,output1);
+      }
+
+      @Override
+      public YuNetFrameWork clone() throws CloneNotSupportedException {
+        var copy=(YuNetFrameWork) super.clone();
+        copy.init_model();
+        return copy;
       }
 
 

@@ -1,0 +1,11 @@
+package com.erling.llama.llm.function.ann;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FuncTools {
+
+    String description() default "";
+
+}

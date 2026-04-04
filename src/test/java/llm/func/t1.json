@@ -1,0 +1,40 @@
+[
+  {
+  "type" : "function",
+  "function" : {
+    "name" : "testFunc",
+    "description" : "这是一个测试函数工具",
+    "parameters" : {
+      "type" : "object",
+      "properties" : {
+        "arg0" : {
+          "type" : "int"
+        },
+        "arg1" : {
+          "type" : "String"
+        }
+      },
+      "required" : [ "arg0", "arg1" ]
+    }
+  }
+},
+  {
+  "type" : "function",
+  "function" : {
+    "name" : "testFunc",
+    "description" : "这是一个测试函数工具",
+    "parameters" : {
+      "type" : "object",
+      "properties" : {
+        "arg0" : {
+          "type" : "int"
+        },
+        "arg1" : {
+          "type" : "String"
+        }
+      },
+      "required" : [ "arg0", "arg1" ]
+    }
+  }
+}
+]

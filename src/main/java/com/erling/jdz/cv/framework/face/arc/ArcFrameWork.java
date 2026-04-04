@@ -8,7 +8,7 @@ import com.erling.jdz.load.ann.DyLinkLib;
 import com.erling.jdz.load.ann.init;
 import com.sun.jna.Pointer;
 
-public class ArcFrameWork {
+public class ArcFrameWork implements Cloneable {
 
 //    @DyLinkLib(path = "./clibconf/lib/GeneralDnnLib_Framework_Lib.dll")
 //    interface IArcFaceFrameWorkInf extends ArcFaceFrameWorkInf {}
@@ -39,4 +39,11 @@ public class ArcFrameWork {
     public void destroy(){
         arcFaceFrameWorkInf.DestroyArcFaceFramework(arcFaceFrameworkPtr);
     }
+
+     @Override
+     public ArcFrameWork clone() throws CloneNotSupportedException {
+        ArcFrameWork new_obj = (ArcFrameWork) super.clone();
+        new_obj.init_model();
+        return new_obj;
+     }
 }
