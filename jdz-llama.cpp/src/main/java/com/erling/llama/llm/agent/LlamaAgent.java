@@ -1,28 +1,28 @@
 package com.erling.llama.llm.agent;
 
 import com.erling.llama.exception.LlamaFrameNull;
-import com.erling.llama.llm.framework.LlamaCppFrameWork;
-import com.erling.llama.llm.framework.RecCallback;
+import com.erling.llama.llm.backend.LlamaCallBack;
+import com.erling.llama.llm.backend.LlamaInvokeBackEnd;
 import com.erling.llama.llm.function.FunctionEngine;
 import com.erling.llama.llm.function.kt.UserToolRT;
 import com.erling.llama.llm.prompt.IPromptTemplate;
-import com.erling.llama.llm.struct.LLM_GGUF_Context;
-import com.erling.llama.llm.struct.LLM_GGUF_Context_RTParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public class LlamaAgent implements IAgent<LlamaAgent> {
+public class LlamaAgent<C,P> implements IAgent<LlamaAgent<C,P>,C,P> {
+
+
 
     private IPromptTemplate template;
 
-    private LlamaCppFrameWork frameWork;
+    private LlamaInvokeBackEnd<C,P> frameWork;
 
     private FunctionEngine functionEngine;
 
     @NotNull
     @Override
-    public LlamaAgent setTemplate(@NotNull IPromptTemplate template) {
+    public LlamaAgent<C,P> setTemplate(@NotNull IPromptTemplate template) {
         this.template = template;
 
         return this;
@@ -30,12 +30,12 @@ public class LlamaAgent implements IAgent<LlamaAgent> {
 
     @NotNull
     @Override
-    public LlamaAgent setFrameWork(@NotNull LlamaCppFrameWork frameWork) {
+    public LlamaAgent<C,P> setFrameWork(@NotNull LlamaInvokeBackEnd<C,P> frameWork) {
         this.frameWork = frameWork;
         return this;
     }
 
-    public LlamaAgent setEngine(
+    public LlamaAgent<C,P> setEngine(
             FunctionEngine functionEngine,
             Supplier<?> functionCallingSupplier
     ){
@@ -46,24 +46,24 @@ public class LlamaAgent implements IAgent<LlamaAgent> {
 
     @NotNull
     @Override
-    public LlamaAgent chat(
-            @NotNull String prompt,
-            @NotNull Supplier<LLM_GGUF_Context_RTParam> rtSupplier,
-            @NotNull Supplier<LLM_GGUF_Context> ctxSupplier,
-            @NotNull RecCallback recCallback
+    public LlamaAgent<C,P> chat(
+            @NotNull String prompt,boolean clear,
+            @NotNull Supplier<C> rtSupplier,
+            @NotNull Supplier<P> ctxSupplier,
+            @NotNull LlamaCallBack recCallBack
     ) {
 
-        return chat("",prompt,rtSupplier,ctxSupplier,recCallback);
+        return chat("",prompt,clear,rtSupplier,ctxSupplier,recCallBack);
     }
 
     @NotNull
     @Override
-    public LlamaAgent chat(
+    public LlamaAgent<C,P> chat(
             @NotNull String system,
-            @NotNull String prompt,
-            @NotNull Supplier<LLM_GGUF_Context_RTParam> rtSupplier,
-            @NotNull Supplier<LLM_GGUF_Context> ctxSupplier,
-            @NotNull RecCallback recCallback) {
+            @NotNull String prompt,boolean clear,
+            @NotNull Supplier<C> rtSupplier,
+            @NotNull Supplier<P> ctxSupplier,
+            @NotNull LlamaCallBack recCallBack) {
 
 
         if (frameWork == null) throw new LlamaFrameNull("frameWork is null");
@@ -71,22 +71,21 @@ public class LlamaAgent implements IAgent<LlamaAgent> {
 
         frameWork.recording(
                 template.format(system,prompt),
-                template.getEndTokenID(),
+                template.getEndTokenID(), clear,
                 rtSupplier,
                 ctxSupplier,
-                recCallback
-        );
+                recCallBack);
         return this;
     }
 
     private boolean isDebug = false;
 
-    public LlamaAgent setDebug(boolean isDebug){
+    public LlamaAgent<C,P> setDebug(boolean isDebug){
         this.isDebug = isDebug;
         return this;
     }
 
-    public void useTools(Supplier<UserToolRT> userToolRTSupplier){
+    public void useTools(Supplier<UserToolRT<C,P>> userToolRTSupplier){
         if (functionEngine == null) throw new LlamaFrameNull("functionEngine is null");
         var userToolRT = userToolRTSupplier.get();
         String baseSystem = userToolRT.getSystem() +
@@ -99,11 +98,11 @@ public class LlamaAgent implements IAgent<LlamaAgent> {
         var res1 = new StringBuffer();
         this.chat(
                 baseSystem,
-                userToolRT.getPrompt(),
+                userToolRT.getPrompt(),true,
                 userToolRT.getRtParam(),
                 userToolRT.getCtx(),
-                (stream, count) -> {
-                    if(count>=userToolRT.component3().get().n_ctx) return false;
+                (stream, count, tokenizer) -> {
+
                     if(isDebug) System.out.print(stream); System.out.flush();
                     res1.append(stream);
                     return true;
@@ -113,12 +112,26 @@ public class LlamaAgent implements IAgent<LlamaAgent> {
         var callResult = "<tools_result>"+invokeResult.toString()+"</tools_result>";
         this.chat(
                 ("上一轮你调用结果为:"+callResult),
-                "请告诉我结果",
+                "请告诉我结果",true,
                 userToolRT.getRtParam(),
                 userToolRT.getCtx(),
-                userToolRT.getRecCallback()
+                userToolRT.getRecCallBack()
         );
 
-//        System.out.println(functionEngine.SendPrompt());
     }
+
+
+   public  float[] embeddings(
+           String prompt,boolean clear,
+           Supplier<C> ctxSupplier,
+           Supplier<P> paramsSupplier
+           ){
+        return frameWork.embeddings(
+                prompt,clear,
+                ctxSupplier,
+                paramsSupplier
+        );
+   }
+
+
 }

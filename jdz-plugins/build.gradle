@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+group = 'com.erling'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation project(':jdz-core')
+    implementation 'net.java.dev.jna:jna:5.14.0'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    compilerOptions {
+        // Kotlin 必须开启预览（关键！）
+        freeCompilerArgs.add("-Xenable-preview")
+    }
+    jvmToolchain(gradle.ext.jvm_version)
+    println "Plugins to build with JVM version: ${gradle.ext.jvm_version}"
+}
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += "--enable-preview"
+}
+tasks.withType(Test).configureEach {
+    jvmArgs += "--enable-preview"
+}

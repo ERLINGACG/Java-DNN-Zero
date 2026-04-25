@@ -6,8 +6,12 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
+gradle.ext.jvm_version = 21
 rootProject.name = 'JDnnZero'
 include 'jdz-core'
 include 'jdz-test'
 include 'jdz-cv'
 include 'jdz-llama.cpp'
+include 'jdz-plugins'
+
+include 'jdz-trt-rag'

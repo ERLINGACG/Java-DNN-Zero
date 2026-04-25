@@ -1,27 +1,28 @@
 package com.erling.llama.llm.agent
 
-import com.erling.llama.llm.framework.LlamaCppFrameWork
-import com.erling.llama.llm.framework.RecCallback
+import com.erling.llama.llm.backend.LlamaCallBack
+import com.erling.llama.llm.backend.LlamaInvokeBackEnd
 import com.erling.llama.llm.prompt.IPromptTemplate
-import com.erling.llama.llm.struct.LLM_GGUF_Context
-import com.erling.llama.llm.struct.LLM_GGUF_Context_RTParam
 import java.util.function.Supplier
 
-interface IAgent<T: IAgent<T>> {
+interface IAgent<T: IAgent<T,C,P>,C,P> {
 
-    fun setFrameWork(frameWork: LlamaCppFrameWork): T
+    fun setFrameWork(frameWork: LlamaInvokeBackEnd<C, P>): T
     fun setTemplate(template: IPromptTemplate): T
 
-    fun chat(system: String,prompt: String,
-             rtSupplier:Supplier<LLM_GGUF_Context_RTParam> ,
-             ctxSupplier:Supplier<LLM_GGUF_Context> ,
-             recCallback: RecCallback
+    fun chat(system: String,prompt: String,clear: Boolean=false,
+             rtSupplier:Supplier<C> ,
+             ctxSupplier:Supplier<P> ,
+             recCallBack: LlamaCallBack
     ):T
-    fun chat(prompt: String,
-             rtSupplier:Supplier<LLM_GGUF_Context_RTParam> ,
-             ctxSupplier:Supplier<LLM_GGUF_Context> ,
-             recCallback: RecCallback
+    fun chat(prompt: String,clear: Boolean=false,
+             rtSupplier:Supplier<C> ,
+             ctxSupplier:Supplier<P> ,
+             recCallBack: LlamaCallBack
     ):T
+
+
+
 
 
 

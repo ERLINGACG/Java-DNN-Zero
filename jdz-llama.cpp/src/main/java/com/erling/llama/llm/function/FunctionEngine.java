@@ -1,13 +1,17 @@
 package com.erling.llama.llm.function;
 
+import com.erling.llama.llm.agent.IAgent;
+import com.erling.llama.llm.agent.LlamaAgent;
 import com.erling.llama.llm.function.kt.FunctionObject;
 import com.erling.llama.llm.function.kt.InvokeFunctionKt;
 import com.erling.llama.llm.function.kt.ScanFunctionKt;
+import com.erling.llama.llm.function.kt.UserToolRT;
 import kotlin.Pair;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,4 +38,9 @@ public class FunctionEngine {
         }
         return res;
     }
+
+
+
+
+
 }

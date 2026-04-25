@@ -56,6 +56,7 @@ fun invoke(functionEngine: FunctionEngine, json: String): String {
                 )
             } catch (e: Exception) {
                 result = e.message
+                println(e)
             }
             if(result==null) result = "result is void"
             // 使用转换后的参数调用
@@ -79,3 +80,4 @@ fun invoke(functionEngine: FunctionEngine, json: String): String {
         )
     )
 }
+

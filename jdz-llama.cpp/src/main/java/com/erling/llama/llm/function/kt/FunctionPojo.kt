@@ -1,8 +1,6 @@
 package com.erling.llama.llm.function.kt
 
-import com.erling.llama.llm.framework.RecCallback
-import com.erling.llama.llm.struct.LLM_GGUF_Context
-import com.erling.llama.llm.struct.LLM_GGUF_Context_RTParam
+import com.erling.llama.llm.backend.LlamaCallBack
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import lombok.Getter
@@ -55,6 +53,14 @@ data class InvokeObject(
     val name: String,
     val arguments: JsonObject  // 注意：字段名需与 JSON 一致（arguments）
 )
+
+@Serializable
+data class StepInvokeObject(
+    val name: String,
+    val arguments: JsonObject,  // 注意：字段名需与 JSON 一致（arguments）
+    var isNext: Boolean)
+
+
 @Getter
 data class FunctionObject(
     val objects: Any,
@@ -62,12 +68,13 @@ data class FunctionObject(
 )
 
 @Getter
-data class UserToolRT(
+data class UserToolRT<C,P>(
+    var name: String,
     var system: String,
     var prompt: String,
-    var rtParam: Supplier<LLM_GGUF_Context_RTParam>,
-    var ctx:     Supplier<LLM_GGUF_Context>,
-    var recCallback: RecCallback
+    var rtParam: Supplier<C>,
+    var ctx:     Supplier<P>,
+    var recCallBack: LlamaCallBack
 )
 
 

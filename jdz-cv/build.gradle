@@ -21,3 +21,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+//kotlin {
+//    jvmToolchain(gradle.ext.jvm_version)
+//    println "CV to build with JVM version: ${gradle.ext.jvm_version}"
+//}

@@ -1,0 +1,24 @@
+{
+  "functions": [
+    {
+      "name": "add",
+      "args": ["int", "int"],
+      "returnType": "void"
+    },
+    {
+      "name": "CreateCppToJava",
+      "args": [],
+      "returnType": "pointer"
+    },
+    {
+      "name": "PrintCppToJava",
+      "args": ["pointer"],
+      "returnType": "void"
+    },
+    {
+      "name": "DestroyCppToJava",
+      "args": ["pointer"],
+      "returnType": "void"
+    }
+  ]
+}
