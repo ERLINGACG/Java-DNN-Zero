@@ -47,7 +47,28 @@ public class TrtEmbModel {
         return RunKt.forward(this,ctx);
     }
 
+    public TrtEmbModel forwardAsync(TrtEmbCtx ctx) {
+        return RunKt.ForwardAsync(this,ctx);
+    }
+
+    public TrtEmbModel synchronize(TrtEmbCtx ctx) {
+        return RunKt.synchronize(this,ctx);
+    }
+
     public TrtEmbModel getEmbedding(TrtEmbCtx ctx, Arena arena, TrtEmbData embedding, String name) {
         return RunKt.getEmbedding(this,ctx,arena,embedding,name);
+    }
+
+    public TrtEmbModel getPooledEmbedding(TrtEmbCtx ctx,
+                                          Arena arena,
+                                          TrtEmbData embedding,
+                                          String hidden_state_name,
+                                          String attention_mask_name
+    ) {
+        return RunKt.getPooledEmbedding(this,ctx,arena,embedding,hidden_state_name,attention_mask_name);
+    }
+
+    public TrtEmbModel clearBindings(TrtEmbCtx ctx) {
+        return RunKt.clearBindings(this,ctx);
     }
 }

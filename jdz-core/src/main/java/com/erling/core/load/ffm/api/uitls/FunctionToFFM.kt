@@ -89,7 +89,7 @@ fun jsonToFFM(libPath: String, functionFFM: FunctionArray) : HashMap<String, Met
 }
 
 fun putFFM(path : String, name: String, args: MutableList<ValueLayout>, returnType: String) : MethodHandle {
-    val lookup: SymbolLookup = SymbolLookup.libraryLookup(path, java.lang.foreign.Arena.ofConfined())
+    val lookup: SymbolLookup = SymbolLookup.libraryLookup(path, java.lang.foreign.Arena.ofAuto())
     val findName = lookup.find(name).orElseThrow()
     val functionDescriptor: FunctionDescriptor
     when (returnType) {

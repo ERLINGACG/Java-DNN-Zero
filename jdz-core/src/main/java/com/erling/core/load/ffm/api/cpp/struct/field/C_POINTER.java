@@ -17,6 +17,25 @@ public class C_POINTER extends C_FIELD<C_POINTER> {
         return this;
     }
 
+    public C_POINTER set(int[] value){
+        baseMemorySegment.set(ValueLayout.ADDRESS,offset,arena.allocateArray(ValueLayout.JAVA_INT,value));
+        return this;
+    }
+    public C_POINTER set(short[] value){
+        baseMemorySegment.set(ValueLayout.ADDRESS,offset,arena.allocateArray(ValueLayout.JAVA_SHORT,value));
+        return this;
+    }
+
+    public C_POINTER set(float[] value){
+        baseMemorySegment.set(ValueLayout.ADDRESS,offset,arena.allocateArray(ValueLayout.JAVA_FLOAT,value));
+        return this;
+    }
+
+    public C_POINTER set(long[] value){
+        baseMemorySegment.set(ValueLayout.ADDRESS,offset,arena.allocateArray(ValueLayout.JAVA_LONG,value));
+        return this;
+    }
+
     public String getForString(){
         return baseMemorySegment.
                 get(ValueLayout.ADDRESS, offset).
@@ -34,6 +53,18 @@ public class C_POINTER extends C_FIELD<C_POINTER> {
         MemorySegment ptr = baseMemorySegment.get(ValueLayout.ADDRESS, offset);
         if (ptr.address() == 0) return null;
         return ptr.reinterpret(len * 4).toArray(ValueLayout.JAVA_FLOAT);
+    }
+
+    public int[] getForIntArrayArray(long len) {
+        MemorySegment ptr = baseMemorySegment.get(ValueLayout.ADDRESS, offset);
+        if (ptr.address() == 0) return null;
+        return ptr.reinterpret(len * 4).toArray(ValueLayout.JAVA_INT);
+    }
+
+    public long[] getForLongArray(long len) {
+        MemorySegment ptr = baseMemorySegment.get(ValueLayout.ADDRESS, offset);
+        if (ptr.address() == 0) return null;
+        return ptr.reinterpret(len * 8).toArray(ValueLayout.JAVA_LONG);
     }
 
 

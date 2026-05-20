@@ -14,9 +14,6 @@ import static com.erling.core.load.ffm.api.cpp.struct.StructRegisterKt.registerS
 
 public  abstract class NativeStruct<T> {
 
-
-
-
     protected final Arena arena;
 
     protected MemorySegment memorySegment;

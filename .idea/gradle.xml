@@ -14,8 +14,11 @@
             <option value="$PROJECT_DIR$/jdz-core" />
             <option value="$PROJECT_DIR$/jdz-cv" />
             <option value="$PROJECT_DIR$/jdz-llama.cpp" />
+            <option value="$PROJECT_DIR$/jdz-ort-core" />
+            <option value="$PROJECT_DIR$/jdz-ort-llm" />
             <option value="$PROJECT_DIR$/jdz-plugins" />
             <option value="$PROJECT_DIR$/jdz-test" />
+            <option value="$PROJECT_DIR$/jdz-tokens" />
             <option value="$PROJECT_DIR$/jdz-trt-rag" />
           </set>
         </option>

@@ -11,7 +11,7 @@ import java.lang.invoke.MethodHandle;
 import java.util.List;
 import java.util.Map;
 
-public class TrtEmbFrameFFM implements NativeClass {
+public class TrtEmbFrameFFM implements NativeClass,Cloneable {
 
     Map<String, MethodHandle> functionMap;
     String modelPath;
@@ -53,6 +53,17 @@ public class TrtEmbFrameFFM implements NativeClass {
     public void init_model() {
         try(Arena arena = Arena.ofConfined()){
             modelSegment = frameInf.CreateTrtEmbFramework(arena.allocateUtf8String(modelPath));
+        }
+    }
+
+    @Override
+    public TrtEmbFrameFFM clone() {
+        try {
+            TrtEmbFrameFFM clone = (TrtEmbFrameFFM) super.clone();
+            clone.init_model();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
         }
     }
 

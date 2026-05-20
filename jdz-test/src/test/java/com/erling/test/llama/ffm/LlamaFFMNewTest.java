@@ -15,15 +15,6 @@ import java.lang.foreign.Arena;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LlamaFFMNewTest {
-//    @JdzFrameFFM(
-//            rootPath = "./libconfig/share",
-//            name = "GeneralDnnLib_Zero_llama_cpp",
-//            useMappingConfig = false
-//    )
-//    @SetConfig(
-//            args = {"libconfig/llama_cpp_config/qwen.json"}
-//    )
-//    public LlamaToCppFFm llamaToCppFFm;
 
     @JdzFrameFFM(
             rootPath = "./libconfig/share",
@@ -47,32 +38,64 @@ public class LlamaFFMNewTest {
     }
 
     @Test
-    public void chat(){
-        var agent = new LlamaAgent<LlamaCtx,LlamaParams>().
-                setFrameWork(NewllamaCppFrameFFm).
-                setTemplate(new Qwen3Template());
-        var start = System.currentTimeMillis();
-        AtomicInteger count = new AtomicInteger();
-        try(Arena arena = Arena.ofConfined()){
-            agent.chat("你好,请介绍你自己",true,
+    public void chat() throws InterruptedException {
+        var thread_1 = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                var agent = new LlamaAgent<LlamaCtx,LlamaParams>().
+                        setFrameWork(NewllamaCppFrameFFm).
+                        setTemplate(new Qwen3Template());
+
+                try(Arena arena = Arena.ofShared()){
+                    agent.chat("你好,请介绍你自己",true,
+                            ()->new LlamaCtx(arena),
+                            ()->{
+                                var params = new LlamaParams(arena);
+                                params.n_batch.set(512);
+                                params.n_ctx.  set(2048);
+                                params.temp.   set(0.7f);
+                                return params;
+                            },
+                            (stream,token_count,tokenizer_len)->{
+
+                                System.out.print(stream);
+                                System.out.flush();
+                                return true;
+                            }
+                    );
+                }
+            }
+
+        });
+        thread_1.start();
+        thread_1.join();
+
+
+
+    }
+
+    @Test
+    public void chat_to(){
+        try(Arena arena = Arena.ofShared()){
+            NewllamaCppFrameFFm.recording(
+                    """
+                            <｜begin▁of▁sentence｜>
+                            <｜User｜>
+                            你好,请介绍你自己一下
+                            <｜Assistant｜>
+                            """,
+                    0,
+                    true,
                     ()->new LlamaCtx(arena),
-                    ()->{
-                        var params = new LlamaParams(arena);
-                        params.n_batch.set(512);
-                        params.n_ctx.  set(2048);
-                        params.temp.   set(0.7f);
-                        return params;
-                    },
+                    ()->new LlamaParams(arena),
                     (stream,token_count,tokenizer_len)->{
-                        count.set(token_count);
                         System.out.print(stream);
                         System.out.flush();
                         return true;
                     }
             );
         }
-        System.out.println("Send "+count.get()+" tokens");
-        System.out.println("cost time: "+(System.currentTimeMillis()-start));
     }
 
     @Test
@@ -88,15 +111,13 @@ public class LlamaFFMNewTest {
             System.out.println(embeddings.length);
         }
     }
+
     @Test
     public void embeddings_thread(){
-//        for(int i=0; i<2; i++){
-//            var embeddings = NewllamaCppFrameFFm.test();
-//        }
         var thread_1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                try(Arena arena = Arena.ofConfined()){
+                try(Arena arena = Arena.ofShared()){
                     var embeddings = NewllamaCppFrameFFm.embeddings("你好,请介绍你自己",true,
                             ()->new LlamaCtx(arena),
                             ()->new LlamaParams(arena)
@@ -108,7 +129,7 @@ public class LlamaFFMNewTest {
         var thread_2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                try(Arena arena = Arena.ofConfined()){
+                try(Arena arena = Arena.ofShared()){
                     var embeddings = NewllamaCppFrameFFm.embeddings("你好,请介绍你自己",true,
                             ()->new LlamaCtx(arena),
                             ()->new LlamaParams(arena)

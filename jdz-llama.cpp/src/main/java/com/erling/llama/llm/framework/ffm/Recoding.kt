@@ -36,17 +36,19 @@ fun recording(
            llamaCppFrameWorkFFM.modelSegment,
            params.memorySegment,ctx.memorySegment
        )
-
+       var map = HashMap<Int,String>()
        val n_eos = if (eos > 0) eos else batch.eos.get()
        var count=0
        do{
             val stream = LlamaStream(arena)
+            val start_time = System.currentTimeMillis()
             llamaCppFrameWorkFFM.frameWorkInf.ReasoningASync(
                 llamaCppFrameWorkFFM.modelSegment,
                 batch.memorySegment,
                 ctx.memorySegment,
                 stream.memorySegment
             )
+            val end_time = System.currentTimeMillis()
             if(!callBack.invoke(
                     stream.stream.string,
                     count,
@@ -55,8 +57,11 @@ fun recording(
                 break
             }
             count++
+            map[count] = "${end_time-start_time}ms"
 
        }while (batch.next_token.get() != n_eos)
+       println()
+       println(map)
        llamaCppFrameWorkFFM.frameWorkInf.Batch_Free(batch.memorySegment)
        if(clear){
            llamaCppFrameWorkFFM.frameWorkInf.Context_Free(ctx.memorySegment) //消除内存泄漏测试，若需要kv缓存记忆则注释并在适当的时候清理.
@@ -73,7 +78,7 @@ fun embeddings(
     ctxOpt:    ()-> LlamaCtx,
     rtParmOpt: ()-> LlamaParams
 ): FloatArray {
-    Arena.ofConfined().use { arena ->
+    Arena.ofShared().use { arena ->
 
         val ctx = ctxOpt.invoke()
         val params = rtParmOpt.invoke()

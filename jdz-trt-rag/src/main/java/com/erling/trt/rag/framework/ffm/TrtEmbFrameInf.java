@@ -48,12 +48,28 @@ public interface TrtEmbFrameInf {
 
     int GetDims(MemorySegment framework,MemorySegment ctx, MemorySegment dims_name);
 //
-    int PostCuda(MemorySegment framework, MemorySegment ctx,
-                 MemorySegment name, MemorySegment data, int len,int isMask);
+    int PostCuda(MemorySegment framework,
+                 MemorySegment ctx,
+                 MemorySegment name,
+                 MemorySegment data,
+                 int len,int isMask
+    );
 //
-    int Forward(MemorySegment framework, MemorySegment ctx);
+    int Forward     (MemorySegment framework, MemorySegment ctx);
+//
+    int ForwardAsync(MemorySegment framework, MemorySegment ctx);
+//
+    int Synchronize(MemorySegment ctx);
 //
     int GetEmbedding(MemorySegment framework,MemorySegment ctx, MemorySegment embedding,MemorySegment name);
 
+    int GetPooledEmbedding(MemorySegment framework,
+                           MemorySegment ctx,
+                           MemorySegment embedding,
+                           MemorySegment hidden_state_name,
+                           MemorySegment attention_mask_name
+    );
+
+    int ClearBindings(MemorySegment ctx);
 
 }

@@ -4,6 +4,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+./image/
+!**/libconfig
+
+
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
@@ -40,3 +44,27 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+.idea
+.kotlin
+
+clibconf
+/image/bus.jpg
+/image/bus_drawn.jpg
+/image/bus_out.jpg
+/image/kb.jpg
+/image/kb_drawn.jpg
+/image/p1.jpg
+/image/p2_0.jpg
+/image/p2_1.jpg
+/image/p2_2.jpg
+/image/p2_3.jpg
+/image/p2_4.jpg
+/image/p3.jpg
+/image/p4.jpg
+/jdz-test/libconfig/onnx/core_json.json
+/jdz-test/libconfig/onnx/ds_r1_tokens.json
+/jdz-test/libconfig/share/GDLZTokens.dll
+/jdz-test/libconfig/share/GeneralDnnLib_Zero_ort_core.dll
+/jdz-test/libconfig/share/GeneralDnnLib_Zero_ort_llm.dll
+/jdz-test/libconfig/trt_rag_config/tokenizer.json

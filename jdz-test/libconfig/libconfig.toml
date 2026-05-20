@@ -5,10 +5,27 @@ ENV=[
 #    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/ggml-cuda.dll",
 #    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/ggml.dll",
 #    "E:/ZeroPlan/C++/Clib/llama.cpp/bin/llama.dll"
+    #===========================CUDA=======================================
+#    "E:/VScode/CUDA/bin/cudart64_12.dll",
+#    "E:/VScode/CUDA/bin/cublas64_12.dll",
+#    "E:/VScode/CUDA/bin/cufft64_11.dll",
+#    "E:/VScode/CUDA/bin/cudnn64_9.dll",
+    #============================llama=======================================
     "E:/CPPlib/SelfLib/llama.cpp/llama.cpp_2/bulid/bin/Release/ggml-base.dll",
     "E:/CPPlib/SelfLib/llama.cpp/llama.cpp_2/bulid/bin/Release/ggml-cpu.dll",
     "E:/CPPlib/SelfLib/llama.cpp/llama.cpp_2/bulid/bin/Release/ggml-cuda.dll",
     "E:/CPPlib/SelfLib/llama.cpp/llama.cpp_2/bulid/bin/Release/ggml.dll",
     "E:/CPPlib/SelfLib/llama.cpp/llama.cpp_2/bulid/bin/Release/llama.dll",
-    "E:/ZeroPlan/C++/Clib/TensorRT-10.12.0.36/lib/nvinfer_10.dll"
+
+    #============================TensorRT=======================================
+    "E:/ZeroPlan/C++/Clib/TensorRT-10.12.0.36/lib/nvinfer_10.dll",
+
+    #============================ONNX======================================
+    "E:/ZeroPlan/C++/Clib/onnxruntime-win-x64-gpu-1.20.1/lib/onnxruntime.dll",
+
+    #============================JDZ-ORT-CORE==============================
+    "E:/ZeroPlan/Java/JDnn-Zero/JDnnZero/jdz-test/libconfig/share/GeneralDnnLib_Zero_ort_core.dll"
+
+
+
 ]

@@ -9,6 +9,9 @@ public class TrtEmbCtx extends NativeStruct<TrtEmbCtx> {
 
     public C_POINTER context;
 
+
+    public C_POINTER stream;
+
     public C_POINTER bindings;
     public TrtEmbCtx(Arena arena) {
         super(TrtEmbCtx.class, arena);

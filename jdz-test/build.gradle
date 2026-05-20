@@ -15,6 +15,9 @@ dependencies {
     implementation project(':jdz-llama.cpp')
     implementation project(':jdz-plugins')
     implementation project(':jdz-trt-rag')
+    implementation project(':jdz-tokens')
+    implementation project(':jdz-ort-core')
+    implementation project(':jdz-ort-llm')
 
     implementation 'net.java.dev.jna:jna:5.14.0'
     compileOnly 'org.projectlombok:lombok:1.18.30' // 编译时仅需接口，不打包

@@ -53,7 +53,7 @@ public class LlamaCppFrameFFm implements NativeClass, LlamaInvokeBackEnd<LlamaCt
 
     @Override
     public void init_model() {
-        try(Arena arena = Arena.ofConfined()){
+        try(Arena arena = Arena.ofShared()){
             modelSegment = frameWorkInf.
                     CreateLLm_GGuf_Framework(arena.allocateUtf8String(modelPath)
                     );

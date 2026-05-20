@@ -135,6 +135,27 @@ fun forward(model: TrtEmbModel, ctx: TrtEmbCtx): TrtEmbModel {
     return model
 }
 
+fun ForwardAsync(model: TrtEmbModel, ctx: TrtEmbCtx): TrtEmbModel {
+    val ret = model.embFrameFFM.frameInf.ForwardAsync(
+        model.embFrameFFM.modelSegment(),
+        ctx.memorySegment
+    )
+    if(ret != 0){
+        throw TrtException("ForwardAsync failed")
+    }
+    return model
+}
+
+fun synchronize(model: TrtEmbModel, ctx: TrtEmbCtx): TrtEmbModel {
+    val ret = model.embFrameFFM.frameInf.Synchronize(
+        ctx.memorySegment
+    )
+    if(ret != 0){
+        throw TrtException("Synchronize failed")
+    }
+    return model
+}
+
 fun getEmbedding(model: TrtEmbModel, ctx: TrtEmbCtx, arena: Arena,embedding: TrtEmbData, name: String): TrtEmbModel {
     val ret = model.embFrameFFM.frameInf.GetEmbedding(
         model.embFrameFFM.modelSegment(),
@@ -147,3 +168,31 @@ fun getEmbedding(model: TrtEmbModel, ctx: TrtEmbCtx, arena: Arena,embedding: Trt
     }
     return model
 }
+
+fun getPooledEmbedding(model: TrtEmbModel,
+                       ctx: TrtEmbCtx,
+                       arena: Arena,
+                       embedding: TrtEmbData,
+                       hidden_state_name: String,
+                       attention_mask_name: String
+): TrtEmbModel {
+    val ret = model.embFrameFFM.frameInf.GetPooledEmbedding(
+        model.embFrameFFM.modelSegment(),
+        ctx.memorySegment,
+        embedding.memorySegment,
+        arena.allocateUtf8String(hidden_state_name),
+        arena.allocateUtf8String(attention_mask_name)
+    )
+    if(ret != 0){
+        throw TrtException("GetPooledEmbedding failed for $hidden_state_name and $attention_mask_name")
+    }
+    return model
+}
+
+fun clearBindings(model: TrtEmbModel,ctx: TrtEmbCtx): TrtEmbModel {
+    model.embFrameFFM.frameInf.ClearBindings(
+        ctx.memorySegment,
+    )
+    return model
+}
+

@@ -1,8 +1,10 @@
 {
   "env": "test2",
   "test2": {
+    "model_path_0": "E:\\ZeroPlan\\python\\dnn\\models\\ds\\DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf",
+    "model_path_1": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\qwen1_5-0_5b-chat-q4_0.gguf",
     "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\qw\\4b\\Qwen3-4B-GGUF\\Qwen3-4B-Q4_K_M.gguf",
-    "n_gpu_layers": 38,
+    "n_gpu_layers":30,
     "use_mmap": true,
     "use_mlock": false,
     "n_ctx": 32000,

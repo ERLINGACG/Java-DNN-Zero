@@ -5,8 +5,21 @@ public enum SetRunTimeEnv {
     UNSET,;
     public void run(){}
 
+    public void run(String path){
+        var env = ReadTomKt.readToml(path,"ENV");
+        try {
+            for(var key : env){
+                if(!key.isEmpty()){
+                    System.load(key);
+                    System.out.println(key + " is loaded successfully");
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
     SetRunTimeEnv(){
-//         var workDir = "E:/ZeroPlan/Java/JDnn-Zero/JDnnZero/";
          var env = ReadTomKt.readToml("libconfig/libconfig.toml","ENV");
         try {
             for(var key : env){
@@ -19,5 +32,8 @@ public enum SetRunTimeEnv {
             System.out.println(e.getMessage());
         }
     }
+
+
+
 
 }

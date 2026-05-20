@@ -4,8 +4,10 @@ import com.erling.core.load.ffm.api.cpp.hook.CreatLayOut
 import com.erling.core.load.ffm.api.cpp.hook.Padding
 import com.erling.core.load.ffm.api.cpp.hook.SetFieldsOffset
 import com.erling.core.load.ffm.api.cpp.struct.field.C_ARRAY
+import com.erling.core.load.ffm.api.cpp.struct.field.C_DOUBLE
 import com.erling.core.load.ffm.api.cpp.struct.field.C_FLOAT
 import com.erling.core.load.ffm.api.cpp.struct.field.C_INT
+import com.erling.core.load.ffm.api.cpp.struct.field.C_INT64
 import com.erling.core.load.ffm.api.cpp.struct.field.C_LONG
 import com.erling.core.load.ffm.api.cpp.struct.field.C_POINTER
 import java.lang.foreign.Arena
@@ -85,6 +87,15 @@ fun registerStruct(clazz: Class<*>, target: Any){
                         layoutList.add(MemoryLayout.paddingLayout(padding.value.toLong()))
                     }
                 }
+
+                C_DOUBLE::class.java ->{
+                    layoutList.add(ValueLayout.JAVA_DOUBLE.withName(field.name))
+                    val padding = field.getAnnotation(Padding::class.java)
+                    if(padding != null){
+                        layoutList.add(MemoryLayout.paddingLayout(padding.value.toLong()))
+                    }
+                }
+
                 C_INT::class.java ->{
                     layoutList.add(ValueLayout.JAVA_INT.withName(field.name))
                     val padding = field.getAnnotation(Padding::class.java)
@@ -93,8 +104,20 @@ fun registerStruct(clazz: Class<*>, target: Any){
                     }
                 }
 
+                C_INT64::class.java ->{
+                    layoutList.add(ValueLayout.JAVA_LONG.withName(field.name))
+                    val padding = field.getAnnotation(Padding::class.java)
+                    if(padding != null){
+                        layoutList.add(MemoryLayout.paddingLayout(padding.value.toLong()))
+                    }
+                }
+
                 C_LONG::class.java ->{
                     layoutList.add(ValueLayout.JAVA_LONG.withName(field.name))
+                    val padding = field.getAnnotation(Padding::class.java)
+                    if(padding != null){
+                        layoutList.add(MemoryLayout.paddingLayout(padding.value.toLong()))
+                    }
                 }
 
                 C_ARRAY::class.java ->{
@@ -181,6 +204,31 @@ fun initFields(target: Any){
 
                 C_FLOAT::class.java -> {
                     val constructor = C_FLOAT::class.java.getConstructor(
+                        MemorySegment::class.java,
+                        Long::class.javaPrimitiveType,
+                        Arena::class.java
+                    )
+                    val instance = constructor.newInstance(
+                        memorySegment, fieldOffsetMap[field.name], arena
+                    )
+                    field.set(target, instance)
+                }
+
+                C_DOUBLE::class.java -> {
+                    val constructor = C_DOUBLE::class.java.getConstructor(
+                        MemorySegment::class.java,
+                        Long::class.javaPrimitiveType,
+                        Arena::class.java
+                    )
+                    val instance = constructor.newInstance(
+                        memorySegment, fieldOffsetMap[field.name], arena
+                    )
+                    field.set(target, instance)
+                }
+
+
+                C_INT64::class.java -> {
+                    val constructor = C_INT64::class.java.getConstructor(
                         MemorySegment::class.java,
                         Long::class.javaPrimitiveType,
                         Arena::class.java
