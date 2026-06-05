@@ -3,6 +3,7 @@ package com.erling.test.tokens;
 import com.erling.core.load.ann.JdzFrameFFM;
 import com.erling.core.load.env.SetRunTimeEnv;
 import com.erling.core.load.ffm.DyLinkLibLoaderForFFM;
+import com.erling.core.load.ffm.api.cpp.hook.SetConfig;
 import com.erling.core.load.jna.DyLinkLibLoader;
 import com.erling.tokens.framework.TokensFramework;
 import com.erling.tokens.struct.TokenizerIDS;
@@ -20,12 +21,31 @@ public class BERT_TokenizeTest {
             name = "GDLZTokens",
             useMappingConfig = false
     )
+    @SetConfig(
+            args = {
+                    "E:\\ZeroPlan\\Java\\JDnn-Zero\\JDnnZero\\jdz-test\\libconfig\\onnx\\ds_r1_tokens.json"
+            }
+    )
     public TokensFramework tokensFramework;
 
     public BERT_TokenizeTest(){
 
         SetRunTimeEnv.SET.run();
         DyLinkLibLoaderForFFM.load(this);
+    }
+
+
+    @Test
+    public void testLoader(){
+        try(Arena arena = Arena.ofShared()){
+            var ids = new TokenizerIDS(arena);
+            var tokens = new TokenizerTokens(arena);
+
+            var tokenizerLoader = new TokenizerLoader(arena);
+            tokenizerLoader.setIFramework(tokensFramework);
+            System.out.println(Arrays.toString(tokenizerLoader.encodeForLong(ids, "你好,请介绍你自己")));
+        }
+
     }
 
     @Test

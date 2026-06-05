@@ -182,8 +182,7 @@ public class TrtEmbRagTest {
                         45736, 53434, 31968, 39607, 73981, 78244, 1811
                 };
                 System.out.println("task1Ays start time :"+System.currentTimeMillis());
-//                model_1.creatCtx(ctx_1);
-//                System.out.println("task1Ays creatCtx time :"+System.currentTimeMillis());
+
                 synchronized (ctx) {
                     model_1.setDims(arena, () -> new InputDims(
                                     ctx,

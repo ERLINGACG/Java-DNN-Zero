@@ -31,4 +31,8 @@ public interface TokensFrameworkInf {
     int gdlz_tokens_decode_tokens(MemorySegment tokenizerLoader, MemorySegment ids, MemorySegment tokens);
 
     int gdlz_tokens_decode_token(MemorySegment tokenizerLoader, int id, MemorySegment token);
+
+    int gdlz_tokens_encode_ids_free(MemorySegment ids);
+
+    int  gdlz_tokens_decode_tokens_free(MemorySegment tokens);
 }

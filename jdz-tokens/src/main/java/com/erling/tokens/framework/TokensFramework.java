@@ -4,7 +4,7 @@ import com.erling.core.load.ffm.api.cpp.clasz.NativeClass;
 import com.erling.core.load.ffm.api.cpp.hook.AutoInit;
 import com.erling.core.load.ffm.api.cpp.hook.CreatProxy;
 import com.erling.core.load.ffm.api.cpp.hook.InitFunction;
-import com.erling.tokens.struct.TokenizerLoader;
+import com.erling.tokens.struct.TokenizerTokens;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
@@ -26,8 +26,6 @@ public class TokensFramework implements NativeClass {
      * 函数映射表，存储 JNI 函数句柄
      */
     Map<String, MethodHandle> functionMap;
-
-    TokenizerLoader tokenizerLoader;
 
 
     String configPath;
@@ -95,5 +93,13 @@ public class TokensFramework implements NativeClass {
         try(Arena arena = Arena.ofShared()){
             return frameworkInf.gdlz_tokens_decode_token(tokenizerLoader, id, token);
         }
+    }
+    public int encodeIdsFree(MemorySegment ids) {
+        try(Arena arena = Arena.ofShared()){
+            return frameworkInf.gdlz_tokens_encode_ids_free(ids);
+        }
+    }
+    public int decodeTokensFree(TokenizerTokens tokens) {
+            return frameworkInf.gdlz_tokens_decode_tokens_free(tokens.getMemorySegment());
     }
 }

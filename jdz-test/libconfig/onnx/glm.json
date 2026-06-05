@@ -1,0 +1,42 @@
+{
+  "model_path": "E:\\ZeroPlan\\python\\dnn\\models\\glm\\ONNX\\glm-edge-1.5b-chat.onnx",
+  "use_cuda": true,
+  "heads": 4,
+  "head_dim": 128,
+  "layers": 59,
+
+  "struct":[
+    {
+      "type": "input",
+      "data_type": "int64",
+      "name": "input_ids",
+      "shape": [-1,-1],
+      "layer_pos": 0,
+      "num": 1
+    },
+    {
+      "type": "mask",
+      "data_type": "float32",
+      "name": "attention_mask",
+      "shape": [-1,-1],
+      "layer_pos": 1,
+      "num": 1
+    },
+    {
+      "type": "pos",
+      "data_type": "int64",
+      "name": "position_ids",
+      "shape": [-1,-1],
+      "layer_pos": 2,
+      "num": 1
+    },
+    {
+      "layer_pos": 3,
+      "type": "start_kv_cache",
+      "data_type": "float32",
+      "name": "kv_shape",
+      "shape": [1, 4, 0, 128],
+      "num": 56
+    }
+  ]
+}

@@ -3,29 +3,31 @@ package com.erling.ort.llm.framework.ffm;
 import java.lang.foreign.MemorySegment;
 
 public interface OnnxRtLlmInf {
-    void GetCtxSize();
-
-    void GetEngineSize();
-
-    void  GetKvSize(MemorySegment kv);
 
     void GetCtxInfo(MemorySegment ctx);
 
-    void GetShapeInfo(MemorySegment shape);
-
-    void ReleaseShapeInfo(MemorySegment shape);
-
-    void GetLLmEngineInfo(MemorySegment framework);
     MemorySegment CreateLLmFramework(MemorySegment framework);
 
-    int Prefill(MemorySegment framework, MemorySegment ctx, MemorySegment kv,MemorySegment input);
+    int GetHeads(MemorySegment framework);
 
-    int Decode(MemorySegment framework, MemorySegment ctx, MemorySegment kv,MemorySegment input);
-    int SetInput(MemorySegment framework, MemorySegment shape, MemorySegment input);
+    int GetLayers(MemorySegment framework);
+
+    int  GetHeadDim(MemorySegment framework);
+
+    int ResetCtx(MemorySegment ctx);
+
+    int ResetKv(MemorySegment kv);
+
+    int PrefillFor1DRoPE(MemorySegment framework, MemorySegment ctx,
+                         MemorySegment kv,        MemorySegment tokens,long len);
+
+    int DecodeFor1DRoPE(MemorySegment framework, MemorySegment ctx,
+                        MemorySegment kv);
+
     int InitSampler(MemorySegment param, MemorySegment ctx);
 
     int  InitBatchForTokenIds(MemorySegment framework, MemorySegment ctx,
-                   MemorySegment kv,        MemorySegment tokens,long len);
+                              MemorySegment kv,        MemorySegment tokens,long len);
     int  GenerateToken(MemorySegment framework, MemorySegment ctx,
                         MemorySegment kv);
 }

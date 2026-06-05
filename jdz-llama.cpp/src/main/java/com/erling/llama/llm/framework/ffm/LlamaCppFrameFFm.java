@@ -86,14 +86,6 @@ public class LlamaCppFrameFFm implements NativeClass, LlamaInvokeBackEnd<LlamaCt
         );
     }
 
-//    public float[] test(){
-//        try(Arena arena = Arena.ofConfined()){
-//            return embeddings("你好,请介绍你自己",
-//                            ()->new LlamaCtx(arena),
-//                            ()->new LlamaParams(arena)
-//                );
-//        }
-//    }
 
 
 

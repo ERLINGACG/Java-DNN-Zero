@@ -1,9 +1,10 @@
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="com.erling.core.load.ffm.api.cpp.hook.SetFieldsOffset" />
-      <item index="1" class="java.lang.String" itemvalue="kotlinx.serialization.Serializable" />
-      <item index="2" class="java.lang.String" itemvalue="lombok.Getter" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="com.erling.core.load.ffm.api.cpp.hook.AutoInit" />
+      <item index="1" class="java.lang.String" itemvalue="com.erling.core.load.ffm.api.cpp.hook.SetFieldsOffset" />
+      <item index="2" class="java.lang.String" itemvalue="kotlinx.serialization.Serializable" />
+      <item index="3" class="java.lang.String" itemvalue="lombok.Getter" />
     </list>
     <writeAnnotations>
       <writeAnnotation name="com.erling.core.load.ann.DyLinkLibInf" />

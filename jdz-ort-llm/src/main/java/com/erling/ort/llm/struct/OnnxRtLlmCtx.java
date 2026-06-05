@@ -1,6 +1,5 @@
 package com.erling.ort.llm.struct;
 
-import com.erling.core.load.ffm.api.cpp.hook.Padding;
 import com.erling.core.load.ffm.api.cpp.struct.NativeStruct;
 import com.erling.core.load.ffm.api.cpp.struct.field.C_INT;
 import com.erling.core.load.ffm.api.cpp.struct.field.C_INT64;
@@ -10,7 +9,6 @@ import java.lang.foreign.Arena;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.erling.core.load.ffm.api.cpp.struct.StructRegisterKt.initFields;
 
@@ -41,7 +39,6 @@ public class OnnxRtLlmCtx extends NativeStruct<OnnxRtLlmCtx> {
 
     public C_INT batch;
 
-    private final List<Long> memory_tokens = new ArrayList<>();
 
     public OnnxRtLlmCtx(Arena arena) {
         super(OnnxRtLlmCtx.class, arena);
@@ -49,31 +46,4 @@ public class OnnxRtLlmCtx extends NativeStruct<OnnxRtLlmCtx> {
         this.batch.set(1);
     }
 
-    public OnnxRtLlmCtx addMemoryTokens(long[] memoryTokens) {
-        Arrays.stream(memoryTokens).boxed().forEach(memory_tokens::add);
-        return this;
-    }
-
-    public long[] getMemoryTokens() {
-        return memory_tokens.stream().mapToLong(Long::valueOf).toArray();
-    }
-    public long[] generateAttentionMask() {
-        var mask=new long[getMemoryTokens().length];
-        Arrays.fill(mask,1L);
-        return mask;
-    }
-    public long[] generatePositionIds() {
-        var ids=new long[getMemoryTokens().length];
-        if(this.token_pos.get()==0){
-            for(int i=0;i<ids.length;++i){
-                ids[i]=i;
-            }
-        }else{
-            for (int i = 0; i < ids.length; ++i) {
-                ids[i] = i + this.token_pos.get();
-            }
-        }
-        this.token_pos.set(this.token_pos.get()+getMemoryTokens().length);
-        return ids;
-    }
 }

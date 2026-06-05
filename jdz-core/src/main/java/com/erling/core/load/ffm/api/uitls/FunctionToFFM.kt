@@ -89,42 +89,51 @@ fun jsonToFFM(libPath: String, functionFFM: FunctionArray) : HashMap<String, Met
 }
 
 fun putFFM(path : String, name: String, args: MutableList<ValueLayout>, returnType: String) : MethodHandle {
-    val lookup: SymbolLookup = SymbolLookup.libraryLookup(path, java.lang.foreign.Arena.ofAuto())
-    val findName = lookup.find(name).orElseThrow()
-    val functionDescriptor: FunctionDescriptor
-    when (returnType) {
-        "void" -> {
-            functionDescriptor = FunctionDescriptor.ofVoid(*args.toTypedArray())
-        }
-        "int" -> {
-            functionDescriptor = FunctionDescriptor.of(
-                ValueLayout.JAVA_INT,
-                *args.toTypedArray()
-            )
-        }
-        "float" -> {
-            functionDescriptor = FunctionDescriptor.of(
-                ValueLayout.JAVA_FLOAT,
-                *args.toTypedArray()
-            )
-        }
-        "double" -> {
-            functionDescriptor = FunctionDescriptor.of(
-                ValueLayout.JAVA_DOUBLE,
-                *args.toTypedArray()
-            )
-        }
-        "MemorySegment" -> {
-            functionDescriptor = FunctionDescriptor.of(
-                ValueLayout.ADDRESS,
-                *args.toTypedArray()
-            )
-        }
-        else -> {
-            throw IllegalArgumentException("returnType $returnType not support")
+    try {
+        val lookup: SymbolLookup = SymbolLookup.libraryLookup(path, java.lang.foreign.Arena.ofAuto())
+        val findName = lookup.find(name).orElseThrow()
+        val functionDescriptor: FunctionDescriptor
+        when (returnType) {
+            "void" -> {
+                functionDescriptor = FunctionDescriptor.ofVoid(*args.toTypedArray())
+            }
+
+            "int" -> {
+                functionDescriptor = FunctionDescriptor.of(
+                    ValueLayout.JAVA_INT,
+                    *args.toTypedArray()
+                )
+            }
+
+            "float" -> {
+                functionDescriptor = FunctionDescriptor.of(
+                    ValueLayout.JAVA_FLOAT,
+                    *args.toTypedArray()
+                )
+            }
+
+            "double" -> {
+                functionDescriptor = FunctionDescriptor.of(
+                    ValueLayout.JAVA_DOUBLE,
+                    *args.toTypedArray()
+                )
+            }
+
+            "MemorySegment" -> {
+                functionDescriptor = FunctionDescriptor.of(
+                    ValueLayout.ADDRESS,
+                    *args.toTypedArray()
+                )
+            }
+
+            else -> {
+                throw IllegalArgumentException("returnType $returnType not support")
+            }
+
         }
 
+        return Linker.nativeLinker().downcallHandle(findName, functionDescriptor);
+    }catch(_: Exception){
+        throw IllegalArgumentException("putFFM error for $name()")
     }
-
-    return Linker.nativeLinker().downcallHandle(findName, functionDescriptor);
 }

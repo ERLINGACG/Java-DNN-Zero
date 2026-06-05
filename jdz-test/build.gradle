@@ -18,8 +18,10 @@ dependencies {
     implementation project(':jdz-tokens')
     implementation project(':jdz-ort-core')
     implementation project(':jdz-ort-llm')
-
+    implementation project(':jdz-trt-core')
+    testImplementation project(':jdz-ort-emd')
     implementation 'net.java.dev.jna:jna:5.14.0'
+
     compileOnly 'org.projectlombok:lombok:1.18.30' // 编译时仅需接口，不打包
     annotationProcessor 'org.projectlombok:lombok:1.18.30' // 编译期生成代码的处理器
 

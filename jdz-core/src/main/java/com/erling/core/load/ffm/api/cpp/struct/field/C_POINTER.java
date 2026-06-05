@@ -21,6 +21,7 @@ public class C_POINTER extends C_FIELD<C_POINTER> {
         baseMemorySegment.set(ValueLayout.ADDRESS,offset,arena.allocateArray(ValueLayout.JAVA_INT,value));
         return this;
     }
+
     public C_POINTER set(short[] value){
         baseMemorySegment.set(ValueLayout.ADDRESS,offset,arena.allocateArray(ValueLayout.JAVA_SHORT,value));
         return this;
