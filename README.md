@@ -1,201 +1,286 @@
 # JDnn-Zero
 
-JDnn-Zero 是一个功能强大的Java深度学习框架，提供了对大型语言模型(LLM)和计算机视觉(CV)任务的支持。该框架通过JNA技术调用C/C++底层库，实现了高效的模型推理能力。
+JDnn-Zero 是一个面向 Java/JVM 的本地深度学习调用框架，主要用于在 Java 中接入 C/C++ 动态库，并封装 LLM、ONNX Runtime、TensorRT、OpenCV/YOLO、Tokenizer 等推理能力。
+
+项目当前处于开发阶段，代码中同时存在 JNA 与 Java FFM 两类本地调用方式；部分示例依赖本机动态库、模型文件和配置路径，需要按自己的环境调整后运行。
+
+## 核心特性
+
+- **本地库自动加载**：通过注解与加载器将 Java 字段注入为 JNA/FFM 框架实例。
+- **运行环境配置**：从 TOML 配置中读取并加载 OpenCV、llama.cpp、ONNX Runtime、TensorRT 等动态库。
+- **LLM 推理封装**：支持基于 llama.cpp/GGUF 的模型加载、流式输出、批处理、函数调用和 grammar 约束。
+- **ONNX Runtime 封装**：包含 LLM、Embedding 等 ONNX Runtime 推理模块。
+- **TensorRT/RAG 封装**：包含 TensorRT 基础接口与 RAG 相关实验模块。
+- **CV 推理封装**：提供 OpenCV YOLO 目标检测接口。
+- **Tokenizer 支持**：提供分词器加载、文本转 token、token 转文本等能力。
 
 ## 项目结构
 
-```
+```text
 JDnnZero/
-├── jdz-core/          # 核心库，提供基础功能
-├── jdz-cv/            # 计算机视觉模块
-├── jdz-llama.cpp/     # LLM模块，基于llama.cpp
-├── clibconf/          # 配置文件和模型目录
-│   ├── lib/           # 动态链接库
-│   ├── model/         # 模型文件
-│   └── modelconf/     # 模型配置文件
-└── src/               # 源代码
-    ├── main/java/com/erling/jdz/
-    │   ├── base/      # 基础类
-    │   ├── cv/        # 计算机视觉相关代码
-    │   ├── llm/       # 语言模型相关代码
-    │   ├── load/      # 动态库加载相关代码
-    │   └── uitls/     # 工具类
-    └── test/          # 测试代码
+├── build.gradle                 # 根 Gradle 配置
+├── settings.gradle              # 多模块声明与 JVM 版本
+├── clibconf/                    # 旧版/示例本地库与模型配置
+├── jdz-core/                    # 核心加载器、注解、FFM/JNA 基础设施
+├── jdz-cv/                      # OpenCV/YOLO 相关封装
+├── jdz-llama.cpp/               # llama.cpp/GGUF LLM 封装
+├── jdz-ort-core/                # ONNX Runtime 基础封装
+├── jdz-ort-llm/                 # ONNX Runtime LLM 封装
+├── jdz-ort-emd/                 # ONNX Runtime Embedding 封装
+├── jdz-plugins/                 # 插件/扩展模块
+├── jdz-test/                    # 集成测试与调用示例
+├── jdz-tokens/                  # Tokenizer 封装
+├── jdz-trt-core/                # TensorRT 基础封装
+├── jdz-trt-rag/                 # TensorRT RAG 相关封装
+└── src/                         # 早期代码与测试保留目录
 ```
 
-## 核心功能
+## 模块说明
 
-### 1. 大型语言模型(LLM)支持
+| 模块 | 说明 |
+| --- | --- |
+| `jdz-core` | 项目核心模块，包含 `@JdzFramework`、`@JdzFrameFFM`、`@DyLinkLibInf` 等注解，JNA/FFM 加载器，运行环境加载，以及 C/C++ 结构体映射辅助类。 |
+| `jdz-cv` | OpenCV/YOLO 推理封装，典型入口为 `CV_YoloFrameWork`，通过配置文件创建 YOLO 框架实例并执行检测。 |
+| `jdz-llama.cpp` | llama.cpp 相关封装，包含 GGUF 模型调用、流式生成、批处理、function calling、grammar、agent 等能力。 |
+| `jdz-ort-core` | ONNX Runtime 公共基础模块。 |
+| `jdz-ort-llm` | ONNX Runtime LLM 调用封装，测试示例中结合 tokenizer 进行推理。 |
+| `jdz-ort-emd` | ONNX Runtime Embedding 调用封装。 |
+| `jdz-tokens` | Tokenizer 动态库封装，提供 tokenizer 加载和 token/id 转换能力。 |
+| `jdz-trt-core` | TensorRT 基础接口与结构体封装。 |
+| `jdz-trt-rag` | TensorRT RAG 相关实验/封装模块。 |
+| `jdz-plugins` | 插件扩展模块。 |
+| `jdz-test` | 集成测试、FFM/JNA 加载示例、LLM/CV/ONNX/TensorRT 调用示例。 |
 
-- **模型格式**：支持GGUF格式模型
-- **流式输出**：支持模型推理的流式输出
-- **函数调用**：支持模型调用Java方法
-- **批量处理**：支持批量文本处理
-- **嵌入式向量**：支持生成文本的嵌入式向量
-- **模型支持**：支持GLM4、Qwen等多种模型
+## 环境要求
 
-### 2. 计算机视觉(CV)支持
+- **JDK 21**：`settings.gradle` 中通过 `gradle.ext.jvm_version = 21` 指定。
+- **Gradle Wrapper**：推荐使用项目自带的 `gradlew` / `gradlew.bat`。
+- **Windows 环境**：当前配置中的动态库路径以 Windows DLL 为主。
+- **本地 C/C++ 动态库**：需要自行准备 OpenCV、llama.cpp、ONNX Runtime、TensorRT、Tokenizer 等对应动态库。
+- **模型文件**：需要自行准备 GGUF、ONNX、TensorRT engine 等模型文件，并修改配置路径。
 
-- **目标检测**：基于YOLO模型的目标检测
-- **人脸识别**：基于YuNet和ArcFace模型的人脸识别
-- **特征提取**：支持人脸特征提取
-
-### 3. 动态库加载
-
-- **自动加载**：通过注解自动加载动态链接库
-- **配置管理**：支持通过TOML配置文件管理库路径
-- **环境设置**：自动设置运行环境
-
-## 技术栈
-
-- **Java**：主要开发语言
-- **JNA**：用于调用C/C++动态链接库
-- **Gradle**：项目构建工具
-- **ASM**：用于字节码操作
-- **Lombok**：用于简化代码
-- **Log4j**：用于日志记录
-- **Jackson**：用于JSON处理
-- **TOML4J**：用于读取配置文件
+部分模块使用 Java FFM 和预览特性，构建脚本已为相关模块添加 `--enable-preview`。
 
 ## 快速开始
 
-### 环境要求
-
-- Java 8 或更高版本
-- Gradle 7.0 或更高版本
-- Windows 操作系统（目前仅支持Windows）
-
-### 安装
-
-1. 克隆项目到本地
+### 1. 克隆项目
 
 ```bash
 git clone <repository-url>
 cd JDnnZero
 ```
 
-2. 构建项目
+### 2. 配置动态库
+
+根据实际路径修改动态库配置。示例配置位于：
+
+```text
+clibconf/libconfig.toml
+```
+
+示例：
+
+```toml
+ENV=[
+    "D:/libs/opencv/bin/opencv_world4120.dll",
+    "D:/libs/llama.cpp/bin/ggml-base.dll",
+    "D:/libs/llama.cpp/bin/ggml-cpu.dll",
+    "D:/libs/llama.cpp/bin/ggml-cuda.dll",
+    "D:/libs/llama.cpp/bin/ggml.dll",
+    "D:/libs/llama.cpp/bin/llama.dll"
+]
+```
+
+加载逻辑会读取 `ENV` 列表并逐个调用 `System.load(...)`。
+
+### 3. 配置模型
+
+常见配置文件位于：
+
+```text
+clibconf/modelconf/
+```
+
+包括：
+
+- `llm_gguf_config.json`：GGUF/llama.cpp 模型配置。
+- `yolo_config.json`：YOLO 模型配置。
+- `yunet_config.json`：YuNet 人脸检测配置。
+- `arcface_config.json`：ArcFace 人脸识别配置。
+
+示例 LLM 配置：
+
+```json
+{
+  "env": "test",
+  "test": {
+    "model_path": "D:/models/qwen.gguf",
+    "n_gpu_layers": 35,
+    "use_mmap": true,
+    "use_mlock": false,
+    "n_ctx": 32000,
+    "n_batch": 1024,
+    "temp": 0.3,
+    "top_k": 30,
+    "top_p": 0.9,
+    "is_grammar": false,
+    "grammar_file": "./clibconf/modelconf/answer_grammar.gbnf"
+  }
+}
+```
+
+### 4. 构建项目
+
+Windows：
+
+```bat
+gradlew.bat build
+```
+
+Linux/macOS：
 
 ```bash
 ./gradlew build
 ```
 
-### 配置
+如果只是编译某个模块，可使用：
 
-1. 配置动态链接库路径
-
-在 `clibconf/libconfig.toml` 文件中配置动态链接库路径：
-
-```toml
-[lib]
-path = "path/to/GeneralDnnLib_Framework_Lib.dll"
+```bash
+./gradlew :jdz-core:build
+./gradlew :jdz-llama.cpp:build
+./gradlew :jdz-test:test
 ```
 
-2. 配置模型路径
+## 典型用法
 
-在 `clibconf/modelconf/` 目录下配置模型相关参数：
+### 加载运行环境
 
-- `llm_gguf_config.json`：LLM模型配置
-- `yolo_config.json`：YOLO模型配置
-- `yunet_config.json`：YuNet模型配置
-- `arcface_config.json`：ArcFace模型配置
+```java
+import com.erling.core.load.env.SetRunTimeEnv;
 
-
-
-## 模块说明
-
-### jdz-core
-
-核心库，提供基础功能：
-- 动态库加载
-- 环境设置
-- 配置文件读取
-
-### jdz-cv
-
-计算机视觉模块：
-- YOLO目标检测
-- YuNet人脸检测
-- ArcFace人脸识别
-
-### jdz-llama.cpp
-
-LLM模块：
-- GGUF模型加载和推理
-- 流式输出
-- 函数调用
-- 批量处理
-- 嵌入式向量生成
-
-## 配置说明
-
-### 动态库配置
-
-在 `clibconf/libconfig.toml` 文件中配置：
-
-```toml
-[lib]
-path = "path/to/GeneralDnnLib_FrameWork_Lib.dll"
+SetRunTimeEnv.SET.run("clibconf/libconfig.toml");
 ```
 
-### 模型配置
+### JNA 框架加载
 
-#### LLM模型配置
+```java
+import com.erling.core.load.ann.JdzFramework;
+import com.erling.core.load.jna.DyLinkLibLoader;
 
-在 `clibconf/modelconf/llm_gguf_config.json` 文件中配置：
+public class Demo {
+    @JdzFramework(
+        rootPath = "./libconfig/share",
+        name = "YourNativeLib",
+        mapping = YourNativeMapping.class
+    )
+    private YourNativeMapping framework;
 
-```json
-{
-  "model_path": "path/to/model.gguf",
-  "n_ctx": 2048,
-  "n_threads": 4
+    public Demo() {
+        DyLinkLibLoader.Load(this);
+    }
 }
 ```
 
-#### CV模型配置
+### FFM 框架加载
 
-在 `clibconf/modelconf/` 目录下配置相应的模型参数。
+```java
+import com.erling.core.load.ann.JdzFrameFFM;
+import com.erling.core.load.ffm.DyLinkLibLoaderForFFM;
+import com.erling.core.load.ffm.api.cpp.hook.SetConfig;
 
-## 依赖项
+public class Demo {
+    @JdzFrameFFM(
+        rootPath = "./libconfig/share",
+        name = "YourNativeLib",
+        useMappingConfig = false
+    )
+    @SetConfig(args = {"./libconfig/your_config.json"})
+    private YourFramework framework;
 
-| 依赖项 | 版本 | 用途 |
-|-------|------|------|
-| JNA | 5.14.0 | 调用C/C++动态链接库 |
-| TOML4J | 0.7.2 | 读取TOML配置文件 |
-| ASM | 9.7 | 字节码操作 |
-| Lombok | 1.18.30 | 简化代码 |
-| Log4j | 2.20.0 | 日志记录 |
-| Jackson | 2.17.2 | JSON处理 |
+    public Demo() {
+        DyLinkLibLoaderForFFM.load(this);
+    }
+}
+```
 
-## 开发指南
+### YOLO 检测
 
-### 添加新功能
+```java
+import com.erling.opencv.yolo.framework.CV_YoloFrameWork;
+import com.erling.opencv.yolo.sturct.YoloOutput;
 
-1. 在相应模块中创建新的类
-2. 实现相应的接口
-3. 添加测试代码
-4. 构建并测试
+CV_YoloFrameWork yolo = new CV_YoloFrameWork("./clibconf/modelconf/yolo_config.json");
+yolo.init_model();
 
-### 测试
+YoloOutput output = new YoloOutput();
+yolo.detect(imageBytes, output);
 
-运行测试：
+yolo.destroy();
+```
+
+实际使用可参考 `jdz-test/src/test/java/com/erling/test/cv/CVYoloTest.java`。
+
+## 测试
+
+运行全部测试：
 
 ```bash
 ./gradlew test
 ```
 
+运行单个模块测试：
+
+```bash
+./gradlew :jdz-test:test
+```
+
+注意：很多测试是集成测试，依赖本机动态库、模型文件和配置路径。如果路径未配置或模型不存在，测试会失败。
+
+## 配置说明
+
+### 动态库配置
+
+`clibconf/libconfig.toml` 使用 `ENV` 数组声明 DLL 加载顺序。依赖链中的基础库应放在前面，例如 OpenCV、`ggml-base.dll`、`ggml-cpu.dll`、`ggml-cuda.dll`、`ggml.dll`、`llama.dll`。
+
+### 模型配置
+
+模型配置通常使用如下结构：
+
+```json
+{
+  "env": "test1",
+  "test1": {
+    "model_path": "./path/to/model",
+    "input_height": 640,
+    "input_width": 640
+  }
+}
+```
+
+其中 `env` 表示当前启用的配置名称，具体参数由不同模块读取。
+
+## 主要依赖
+
+| 依赖 | 用途 |
+| --- | --- |
+| JNA `5.14.0` | 调用 C/C++ 动态库。 |
+| Kotlin JVM | Kotlin 源码与 Java 混合开发。 |
+| Kotlin Serialization | JSON 序列化/反序列化。 |
+| TOML4J `0.7.2` | 读取 TOML 配置。 |
+| JUnit 5 | 单元测试与集成测试。 |
+| Lombok | 简化部分 Java POJO/链式调用代码。 |
+
 ## 注意事项
 
-- 目前仅支持Windows操作系统
-- 需要正确配置动态链接库路径
-- 需要正确配置模型路径和参数
-- 大型模型可能需要较多的内存
-- README.md文件AI写的，部分内容不全
+- 当前仓库内的配置路径包含较多本机绝对路径，首次运行前需要改为自己的路径。
+- 本项目大量依赖本地 C/C++ 动态库，Java 编译成功不代表推理示例可以直接运行。
+- 使用 GPU/CUDA/TensorRT 时，需要确保驱动、CUDA、cuDNN、TensorRT 与动态库版本匹配。
+- 运行 LLM 或大模型示例时，请确认显存/内存足够。
+- 如果遇到 `UnsatisfiedLinkError`，优先检查 DLL 路径、加载顺序和依赖库是否缺失。
+- 如果遇到 FFM 相关错误，请确认使用 JDK 21 并启用了预览参数。
 
 ## 许可证
 
-[MIT License](LICENSE)
+待定
 
-## 联系方式
-
-如有问题或建议，请联系项目维护者。
+[//]: # (仓库中暂未看到独立许可证文件。请在发布或商用前补充明确的 LICENSE 文件。)
