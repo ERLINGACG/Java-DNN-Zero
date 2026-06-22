@@ -19,6 +19,8 @@ dependencies {
     implementation project(':jdz-ort-core')
     implementation project(':jdz-ort-llm')
     implementation project(':jdz-trt-core')
+    implementation project(':jdz-trt-illm')
+
     testImplementation project(':jdz-ort-emd')
     implementation 'net.java.dev.jna:jna:5.14.0'
 

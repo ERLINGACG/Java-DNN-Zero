@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group = 'com.erling'
@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     implementation project(':jdz-core')
+    implementation project(':jdz-trt-core')
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -23,10 +25,10 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(Test).configureEach {
     jvmArgs += "--enable-preview"
 }
-
 test {
     useJUnitPlatform()
 }
 kotlin {
     jvmToolchain(21)
 }
+

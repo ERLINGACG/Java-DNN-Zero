@@ -23,7 +23,7 @@ public class BERT_TokenizeTest {
     )
     @SetConfig(
             args = {
-                    "E:\\ZeroPlan\\Java\\JDnn-Zero\\JDnnZero\\jdz-test\\libconfig\\onnx\\ds_r1_tokens.json"
+                    "E:\\ZeroPlan\\Java\\JDnn-Zero\\JDnnZero\\jdz-test\\libconfig\\onnx\\glm_tokenzer.json"
             }
     )
     public TokensFramework tokensFramework;
@@ -43,7 +43,17 @@ public class BERT_TokenizeTest {
 
             var tokenizerLoader = new TokenizerLoader(arena);
             tokenizerLoader.setIFramework(tokensFramework);
-            System.out.println(Arrays.toString(tokenizerLoader.encodeForLong(ids, "你好,请介绍你自己")));
+            long[] token_s={972, 906, 2871, 5271, 24851, 54869, 14328, 17200, 3508, 8715, 1812, 2122, 300, 8007, 3508, 8715, 21208, 15889, 649, 32, 50, 48, 50, 51, 32, 6951, 8163, 36552, 6073, 15430, 77, 45, 52, 32, 4293, 28303, 2871, 1111, 365, 819, 54194, 650, 36433, 2807, 12116, 396, 460, 1345, 14776, 10735, 9984, 2509, 1126, 3069, 5012, 17241, 1401, 8355, 9474, 326, 59253};
+//            System.out.println(Arrays.toString(tokenizerLoader.encodeForLong(ids, """
+//                    [gMASK]<sop><|system|>你是一个有用的AI助手。
+//                    <|user|>你好，请介绍你自己
+//                    <|assistant|>
+//                    """)));
+//            System.out.println("decode 972: "+(tokenizerLoader.decode(tokens, 972)));
+            for(long token:token_s){
+                System.out.print(tokenizerLoader.decode(tokens, (int)token));
+                System.out.flush();
+            }
         }
 
     }
@@ -54,14 +64,17 @@ public class BERT_TokenizeTest {
             var tokenizerLoader = new TokenizerLoader(arena);
             var ids = new TokenizerIDS(arena);
             tokensFramework.loadTokenizer(tokenizerLoader.getMemorySegment(),
-                    "E:\\ZeroPlan\\Java\\JDnn-Zero\\JDnnZero\\jdz-test\\libconfig\\trt_rag_config\\tokenizer.json"
+                    "E:\\ZeroPlan\\Java\\JDnn-Zero\\JDnnZero\\jdz-test\\libconfig\\onnx\\glm_tokenzer.json"
             );
 
             Runnable task=()->{
                 var start_time = System.currentTimeMillis();
                 System.out.println(Thread.currentThread().getName()+": "+start_time);
                 tokensFramework.encode(
-                        tokenizerLoader.getMemorySegment(), "你好,请介绍你自己,hello world", ids.getMemorySegment()
+                        tokenizerLoader.getMemorySegment(), """
+                                [gMASK]<sop><|system|>你是一个有用的AI助手。
+                                <|user|>你好
+                                <|assistant|>""", ids.getMemorySegment()
                 );
                 System.out.println(Arrays.toString(ids.ids.getForIntArrayArray(ids.len.get())));
                 var tokens = new TokenizerTokens(arena);

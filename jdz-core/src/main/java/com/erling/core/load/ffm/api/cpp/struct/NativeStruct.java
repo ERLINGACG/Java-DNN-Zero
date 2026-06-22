@@ -18,6 +18,9 @@ public  abstract class NativeStruct<T> {
 
     protected MemorySegment memorySegment;
     protected StructLayout structLayout;
+
+
+
     public Map<String, Long> getFieldOffsetMap() {
         return fieldOffsetMap;
     }

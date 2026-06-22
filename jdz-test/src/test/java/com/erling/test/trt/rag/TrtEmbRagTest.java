@@ -149,6 +149,15 @@ public class TrtEmbRagTest {
                     model.clearBindings(ctx);
         }
     }
+    @Test
+    public void model_(){
+        try(Arena arena=Arena.ofShared()){
+            var model_1 = new TrtEmbModel();
+            var ctx=new TrtEmbCtx(arena);
+            model_1.
+                    setFrameFFM(trtEmbFrameFFM).creatCtx(ctx);
+        }
+    }
 
     @Test
     public void model_thread_test(){

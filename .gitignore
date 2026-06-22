@@ -5,7 +5,7 @@ build/
 !**/src/test/**/build/
 
 ./image/
-!**/libconfig
+**/libconfig/
 
 
 ### IntelliJ IDEA ###

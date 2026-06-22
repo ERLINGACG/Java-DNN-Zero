@@ -22,6 +22,7 @@ fun load(tagObject: Any){
     val libType = getLibType();
 
     val objFields = tagObject.javaClass.declaredFields
+
     objFields.forEach  { field ->
         field.isAccessible = true
         val isFrame = field.getAnnotation(JdzFrameFFM::class.java) ?: return@forEach
